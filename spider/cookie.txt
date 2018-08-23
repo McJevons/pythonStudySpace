@@ -1,0 +1,7 @@
+# Netscape HTTP Cookie File
+# http://curl.haxx.se/rfc/cookie_spec.html
+# This is a generated file!  Do not edit.
+
+.sh-huasing.com	TRUE	/	FALSE		safedog-flow-item	9A3DC25D4AA967295F541760C09B4561
+www.sh-huasing.com	FALSE	/	FALSE		ASPSESSIONIDASCDCRCB	FFFHANEAKIJEDNKLAOABLIKH
+www.sh-huasing.com	FALSE	/	FALSE		hsweb	cfs%5Fe=&xx=0&mainUser=&title=&logintimes=1557&jkfb=hx&hx=True&hxcfs=&import=&custom=&username=HLF&co=&isLogin=1&isAdmin=0
