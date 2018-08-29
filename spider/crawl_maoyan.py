@@ -1,5 +1,6 @@
 import requests
 import re
+import time
 
 headers = {
     'User-Agent':
@@ -23,12 +24,25 @@ def get_data(html):
         yield (x[0], x[1], x[2], x[3], x[4], x[5] + x[6])
 
 
-def main():
-    url = 'http://maoyan.com/board/4'
+def main(page_no):
+    url = 'http://maoyan.com/board/4?offset=%s' % page_no
     html = get_one_page(url)
     # result = get_data(html)
     for item in get_data(html):
-        print(item)
+        write_to_file(item)
 
 
-main()
+def write_to_file(item):
+    with open('./spider/save/maoyan.txt', 'a', encoding='utf-8') as f:
+        f.writelines(x + ' ' for x in item)
+        f.write('\n')
+        # f.write(str(item) + '\n')
+
+
+with open('./spider/save/maoyan.txt', 'w', encoding='utf-8') as f:
+    f.write('')
+
+for page_no in range(3):
+    main(page_no * 10)
+    print('==============finish page %s=====================' % page_no)
+    time.sleep(10)
