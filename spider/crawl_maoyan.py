@@ -19,15 +19,16 @@ def get_data(html):
     result = re.findall(
         '<dd>.*?board-index.*?>(.*?)</i>.*?data-src="(.*?)@.*?data-val.*?">(.*?)</a>.*?class="star">\s*(.*?)\s*</p>.*?releasetime">(.*?)</p>.*?integer">(.*?)</i>.*?fraction">(.*?)</i>.*?</dd>',
         html, re.S)
-    return result
+    for x in result:
+        yield (x[0], x[1], x[2], x[3], x[4], x[5] + x[6])
 
 
 def main():
     url = 'http://maoyan.com/board/4'
     html = get_one_page(url)
-    result = get_data(html)
-    for x in result:
-        print(x[0], x[1], x[2], x[3], x[4], x[5] + x[6])
+    # result = get_data(html)
+    for item in get_data(html):
+        print(item)
 
 
 main()
