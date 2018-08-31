@@ -1,6 +1,6 @@
 import requests
-import re
 import time
+from lxml import etree
 
 headers = {
     'User-Agent':
@@ -17,12 +17,17 @@ def get_one_page(url):
 
 
 def get_data(html):
-    result = re.findall(
-        '<dd>.*?board-index.*?>(.*?)</i>.*?data-src="(.*?)@.*?data-val.*?">' +
-        '(.*?)</a>.*?class="star">\s*(.*?)\s*</p>.*?releasetime">(.*?)</p>' +
-        '.*?integer">(.*?)</i>.*?fraction">(.*?)</i>.*?</dd>', html, re.S)
-    for x in result:
-        yield (x[0], x[1], x[2], x[3], x[4], x[5] + x[6])
+    html = etree.HTML(html)
+    index = html.xpath('//dd//i[contains(@class,"board-index")]/text()')
+    img_src = html.xpath('//dd/a/img/@data-src')
+    film_name = html.xpath('//dd//p[@class="name"]/a/text()')
+    star = html.xpath('//dd//p[@class="star"]/text()')
+    release_time = html.xpath('//dd//p[@class="releasetime"]/text()')
+    score1 = html.xpath('//dd//p[@class="score"]/i[1]/text()')
+    score2 = html.xpath('//dd//p[@class="score"]/i[2]/text()')
+    for i in range(10):
+        yield (index[i], img_src[i], film_name[i].strip(), star[i].strip(),
+               release_time[i].strip(), score1[i] + score2[i])
 
 
 def main(page_no):
@@ -43,7 +48,8 @@ def write_to_file(item):
 with open('./spider/save/maoyan.txt', 'w', encoding='utf-8') as f:
     f.write('')
 
-for page_no in range(3):
+for page_no in range(1):
     main(page_no * 10)
     print('==============finish page %s=====================' % page_no)
     time.sleep(10)
+    
