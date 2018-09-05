@@ -52,4 +52,3 @@ for page_no in range(1):
     main(page_no * 10)
     print('==============finish page %s=====================' % page_no)
     time.sleep(10)
-    
