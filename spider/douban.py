@@ -8,15 +8,17 @@ def get_html(url, headers):
     return req.text
 
 
-def get_data(html):
+def get_items(html):
     soup = BeautifulSoup(html, 'lxml')
-    get_item(soup.select('.subject-item'))
+    return soup.select('.subject-item')
 
 
-def get_item(items):
+def get_data(items):
     for item in items:
         # title = re.sub('\s*', '', item.select('.info h2 a')[0].text)
-        title = re.sub('\s*', '', item.h2.a.text)
+        # title = re.sub('\s*', '', item.h2.a.text)
+        title = item.h2.a['title']
+        url = item.h2.a['href']
         # 可能存在没有评分的情况，不一定能取得rating_nums
         star = item.find(class_='rating_nums')
         star = star.text if star else '--'
@@ -25,7 +27,7 @@ def get_item(items):
             price = re.search('\d+\.{0,1}\d*元{0,1}$', price).group(0)
         except:
             price = '--'
-        print(title, star, price)
+        print(star, price, title, url)
 
 
 def get_tag():
@@ -50,4 +52,6 @@ if __name__ == '__main__':
     for page in range(3):
         page_no = page * 20
         url = 'https://book.douban.com/tag/%s?start=%d&type=T' % (tag, page_no)
-        get_data(get_html(url, headers))
+        html = get_html(url, headers)
+        items = get_items(html)
+        get_data(items)
