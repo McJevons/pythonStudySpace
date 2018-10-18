@@ -1,6 +1,10 @@
 from selenium import webdriver
 
-browser = webdriver.Chrome()
+chrome_options = webdriver.ChromeOptions()
+prefs = {"profile.managed_default_content_settings.images": 2}
+chrome_options.add_experimental_option("prefs", prefs)
+
+browser = webdriver.Chrome(chrome_options=chrome_options)
 browser.get('http://www.smzdm.com')
 
 button_login = browser.find_element_by_class_name('J_login_trigger')
@@ -17,4 +21,3 @@ button_submit.click()
 browser.implicitly_wait(10)
 sign_button = browser.find_element_by_class_name('J_punch')
 sign_button.click()
-
