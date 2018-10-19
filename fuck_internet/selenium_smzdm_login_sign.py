@@ -1,4 +1,5 @@
 from selenium import webdriver
+import json
 
 # 设置chrome选项为不加载图像
 chrome_options = webdriver.ChromeOptions()
@@ -19,7 +20,7 @@ browser.switch_to_frame('J_login_iframe')
 # 定位用户名和密码输入框，并键入用户名密码
 username = browser.find_element_by_id('username')
 password = browser.find_element_by_id('password')
-username.send_keys('jewely@qq.com')
+username.send_keys('XXXXXX')
 password.send_keys('******')
 # 定位登录按钮，模拟点击进行登录
 button_submit = browser.find_element_by_id('login_submit')
@@ -27,6 +28,16 @@ button_submit.click()
 
 # 隐式等待10s，若规定时间内后续节点未加载出来则抛出异常
 browser.implicitly_wait(10)
+
 # 定位签到按钮，模拟点击完成签到
 sign_button = browser.find_element_by_class_name('J_punch')
 sign_button.click()
+
+# cookies写入文件
+with open('cookies.txt', 'w') as file:
+    cookies = browser.get_cookies()
+    print(cookies)
+    # 将cookies编码成json格式并直接写入文件
+    json.dump(cookies, file)
+
+browser.quit()

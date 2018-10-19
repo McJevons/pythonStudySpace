@@ -2,5 +2,5 @@
 .vscode/settings.json
 spider/ts
 spider/save
-spider/try*
+try*
 *secret*
