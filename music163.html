@@ -1,0 +1,352 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta charset="utf-8" />
+<meta name="baidu-site-verification" content="cNhJHKEzsD" />
+<meta property="qc:admins" content="27354635321361636375" />
+<meta name="robots" content="nofollow" />
+<meta name="applicable-device" content="pc" />
+<title>网易云音乐</title>
+<meta property="og:title" content="网易云音乐" />
+<script type="text/javascript" async="" src="//wr.da.netease.com/ga.js"></script><script type="text/javascript">
+var GDownloadLink="";
+var GDevice = "phone";
+var GFrom="";
+var GClient="";
+var GPlatform="other";
+var GRef = '';
+var GInApp = false;
+var GMobile = false;
+var GAbroad = false;
+var GUser={};
+var GAllowRejectComment = false;
+var GEnc = true;
+var GEnvType = "online";
+var GWebpSupport = "1";
+window.NEJ_CONF = {p_csrf:{cookie:'__csrf',param:'csrf_token'}};
+GUtil = {
+getBase:function(){
+return location.protocol+'//'+location.hostname;
+},
+getPathAndHash:function(_url){//获取URL path 之后的所有内容,并将/#/替换成/m/使之成为path的一部分
+if(!_url) return '';
+var _reg0 = /^https?:\/\/.*?\//i,
+_reg1 = /\/?#\/?/i;
+return _url.replace(_reg0,'/').replace(_reg1,'/m/');
+},
+composeRefer:function(_url,_ref){//对所有的页面请求都加上ref参数表示被嵌套的来源
+if(!_ref) return _url;
+var _hi = _url.indexOf('#'),
+_si = _url.indexOf('?');
+if(_si&gt;0&amp;&amp;(_si&lt;_hi||_hi&lt;0)){
+return _url.substring(0,_si+1)+'ref='+_ref+'&amp;'+_url.substring(_si+1);
+}else if(_hi&gt;0&amp;&amp;(_si&lt;0||_si&gt;_hi)){
+return _url.substring(0,_hi)+'?ref='+_ref+_url.substring(_hi);
+}else{
+return _url+'?ref='+_ref;
+}
+}
+};(function(){
+var _ua = window.navigator.userAgent,
+_isMobile = /(mobile|mobi|wap|iphone)/i.test(_ua),
+_isAndroid = /android/i.test(_ua),
+_isIpad = /(ipad)/i.test(_ua),
+_igList = [/^\/xiami$/,/^\/live$/],//不需要以单页面打开的列表，比如某些活动页面
+_pn = location.pathname,
+_idx = _pn.lastIndexOf('/'),
+_pReg = /\s*(\w+)\s*=\s*(\d+)\s*/,
+_redirect2mobile = function() {
+var _type,_murl,
+_id = 0,
+_hash = location.hash,
+_mReg = /^#\/?m?\/(share|song|playlist|djradio|dj|program|album|mv|artist|topic|radio|zysf|drqp|qp|activity|store|user|event|video|discover\/toplist)(\/(\d+))?/,
+_base = location.protocol+'//'+location.hostname,
+_sindex = _hash.lastIndexOf('?'),
+_search = _sindex&gt;-1?_hash.substring(_sindex+1):'',
+_match = _mReg.exec(_hash);
+// 无hash || 不匹配 || 匹配但是商品之外不带参数 || 匹配且是排行榜
+if (!_hash.length || !_match || (_match[1] != 'store' &amp;&amp; !_search) || /share|discover\/toplist/.test(_match[1])) {
+// 有hash &amp;&amp; (没有参数 || 排行榜)
+if ((!_search || /share|discover\/toplist/.test(_match[1])) &amp;&amp; _hash.length) {
+location.href = _base + '/' + _hash.replace('#', 'm');
+} else {
+location.href = _base + '/m/';
+}
+return;
+}
+_type = _match[1];
+_id = _match[3];
+if (_type == 'dj') _type = 'program';
+if (_type == 'store') {
+_murl = /^#\/store\/(product|concert)\/detail/.test(_hash) ? _hash.replace('#/store', '/store/m') : '/store/m/product/index';
+} else {
+_murl = '/' + _type + '?' + (_id ? 'id=' + _id + '&amp;': '') + _search;
+}
+location.href = _base + _murl;
+};
+if(_isMobile || _isAndroid || _isIpad){
+_redirect2mobile();
+return;
+}
+if(!_pn||_pn=='/') return;
+for(var i in _igList){
+if(_igList[i].test(_pn)) return;
+}
+if(top==self){
+location.href = '/#'+GUtil.getPathAndHash(location.href);
+return;
+}
+//搜索引擎过来的内容页连接
+if(top==self&amp;&amp;/^\/static\/(song|playlist|album|artist)/i.test(_pn)){
+location.href = '/#'+_pn.substring(0,_idx).replace('/static/','/')+'?id='+_pn.substring(_idx+1);
+}
+})();
+(function(){
+var _addEvent = function(_node,_type,_cb){
+if(_node.addEventListener){
+_node.addEventListener(_type,_cb);
+}else if(_node.attachEvent){
+_node.attachEvent('on'+_type,_cb);
+}
+},
+_pathPrefixArray = [
+'/store/', // 商城
+'/m/at/', // 活动
+'/prime/m/', // 会员移动端页面
+'/oauth2/', // 授权
+'/m/oauth2/', // 授权
+'/octave/', // 新数字专辑
+'/v/', // 新数字专辑
+'/st/', // 静态页面
+'/nmusician/',// 音乐人
+'/nact/', // 新活动
+'/m/topic/' // 专栏移动端
+],
+_isNotMainsitePagePath = function(_pagePath){
+// 对于非主站内的页面的跳转 需要排除
+var _path = (_pagePath||'').replace(/^https?:\/\/.*?\//i, '/').split(/[?#]/)[0];
+for(var i=0;i&lt;_pathPrefixArray.length;i++){
+if(_path.indexOf(_pathPrefixArray[i])===0) return true;
+}
+return false;
+},
+_onAnchorClick = function(_event){//截获所有&lt;a&gt;标签的点击事件，自定义页面的跳转
+_event = _event||window.event;
+var _el = _event.target||_event.srcElement,
+_base = location.protocol+'//'+location.host;
+while(_el&amp;&amp;_el!=document){
+if(_el.tagName&amp;&amp;_el.tagName.toLowerCase()=='a'){
+//fix ie6下有时javascript:;不能阻止默认事件的bug.
+if(_el.href.indexOf('javascript:')&gt;=0){
+!!_event.preventDefault
+? _event.preventDefault()
+: _event.returnValue = !1;
+return;
+}
+if(_event.button==2) return;//ff 右键会触发click事件
+//商城有独立地顶栏了，排除掉。但会员、数字专辑、单曲的商品、订单页仍保持主站frame，
+//这些url往往是通过/vip2, /payfee这样的地址跳转的，也没有问题，如果真的有，URL用#配置就好了
+if(_isNotMainsitePagePath(_el.href)) return;
+//新窗口打开的链接、云音乐单页面形式的链接、站外的链接不做拦截处理。
+if(_el.target=='_blank'
+||_el.target=='blank'
+||_isNotSameHost(_el.href)
+||_el.href==_base
+||_el.href.indexOf(_base+'/#')&gt;=0) return;
+!!_event.preventDefault
+? _event.preventDefault()
+: _event.returnValue = !1;
+location.dispatch2(_el.href);
+break;
+}else{
+_el = _el.parentNode;
+}
+}
+},
+_isNotSameHost = function(_href){
+var _same = true;
+if(_href.charAt(0)!='/'){
+var _index = _href.indexOf('//'+location.hostname);
+if(_index &gt; 0){
+var _index2 = _href.indexOf('?');
+if(_index2 &gt; 0 &amp;&amp; _index2 &lt; _index){
+_same = false;
+}
+}else{
+_same = false;
+}
+}
+return !_same;
+};
+_addEvent(document,'click',_onAnchorClick);
+//扩展一个js中直接使用的页面跳转的方法，以拦截js中的页面跳转行为
+location.dispatch2 = function(_url,_replace){
+var delegate = false;
+try{
+delegate = !!top.GDispatcher;
+}catch(e){
+delegate = false;
+}
+// 处理对于非主站内的页面的跳转
+if(_isNotMainsitePagePath(_url)){
+if(delegate &amp;&amp; top.location &amp;&amp; top.location.href){
+top.location.href = _url;
+}else{
+location.href = _url;
+}
+return;
+}
+if(delegate){
+top.GDispatcher.dispatch(_url,_replace);
+}else{
+_url = GUtil.composeRefer(_url,GRef);
+//邮箱音乐盒中，每次链接的跳转都要将proxy.html的地址合并到hash中
+if(GRef&amp;&amp;GRef=='mail'){
+var _hindex,_sindex,
+_reg = /(https?:\/\/.+\/proxy.html)/,
+_hreg = /#(.*?)$/,
+_href = decodeURIComponent(location.href);
+if(!_reg.test(decodeURIComponent(_url))&amp;&amp;_reg.test(_href)){
+_hindex = _url.indexOf('#');
+_sindex = _url.lastIndexOf('?');
+if(_hindex&gt;0){
+_url = _url+(_sindex&gt;_hindex?'&amp;':'?')+'proxy='+encodeURIComponent(RegExp.$1);
+}else{
+_url = _url+'#proxy='+encodeURIComponent(RegExp.$1);
+}
+}
+}
+if(_replace){
+location.replace(_url);
+}else{
+location.href = _url;
+}
+}
+};
+})();(function(){
+if(window.addEventListener){
+window.addEventListener('scroll', onScroll)
+}else{
+window.attachEvent('onscroll', onScroll)
+}
+try{
+top.scrollTopbar(0);
+}catch(e){
+}
+function onScroll(){
+try{
+top.scrollTopbar(Math.max(document.body.scrollTop, document.documentElement.scrollTop));
+}catch(e){
+//ignore
+}
+};
+})();</script>
+<base href="//music.163.com/" target="_top" />
+<link rel="shortcut icon" href="//s1.music.126.net/style/favicon.ico?v20180823" />
+<link href="//s2.music.126.net/web/s/core_8bb3cfc1daa59ba96f88696027ab0882.css?8bb3cfc1daa59ba96f88696027ab0882" type="text/css" rel="stylesheet" /><link href="//s2.music.126.net/web/s/pt_frame_c0b17aa76b438dbf3e09b4d643f18587.css?c0b17aa76b438dbf3e09b4d643f18587" type="text/css" rel="stylesheet" />
+<link href="//s2.music.126.net/web/s/pt_search_index_bfebfae968cc75c57f18da659aa8180a.css?bfebfae968cc75c57f18da659aa8180a" type="text/css" rel="stylesheet" />
+<style type="text/css">.auto-1540224008619{position:fixed;_position:absolute;z-index:100;top:0;bottom:0;left:0;right:0;width:100%;height:100%;background-image:url(data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==);}.auto-1540224008620{position:absolute;z-index:1000;border:1px solid #aaa;background:#fff;}.auto-1540224008620 .zbar{line-height:30px;background:#8098E7;border-bottom:1px solid #aaa;}.auto-1540224008620 .zcnt{padding:10px 5px;}.auto-1540224008620 .zttl{margin-right:20px;text-align:left;}.auto-1540224008620 .zcls{position:absolute;top:5px;right:0;width:20px;height:20px;line-height:20px;cursor:pointer;}.auto-1540224008621{position:absolute;background:#fff;}.auto-1540224008622{font-size:12px;line-height:160%;}.auto-1540224008622 a{margin:0 2px;padding:2px 8px;color:#333;border:1px solid #aaa;text-decoration:none;}.auto-1540224008622 .js-disabled{cursor:default;}.auto-1540224008622 .js-selected{cursor:default;background:#bbb;}.j-item.j-selected a{background:#eee;text-decoration:none;color:#333;}.u-atlist{position: absolute;z-index: 10000;}.f-thide.selected-item{background-color: #eee;}#shadow-box{position: absolute;display: block;left: 450px;top: 1020px;border: 1px solid black;word-wrap: break-word;display:none;opacity: 0;filter: Alpha(opacity=0);z-index: -1000;}</style><script type="text/javascript" charset="UTF-8" async="" src="https://acstatic-dun.126.net/2.4.0_0f8fdcee/watchman.min.js"></script><script type="text/javascript" charset="UTF-8" async="" src="https://acstatic-dun.126.net/2.4.0_0f8fdcee/watchman.min.js"></script></head>
+<body id="auto-id-OX5za2w8dDg2lQVp">
+<div data-module="search" data-sub="search" id="g_top" class="m-top"> </div>
+<div id="g_nav" class="m-subnav m-subnav-up f-pr"></div>
+<script>
+try{
+top.matchNav("search", "search");
+}catch(e){
+}
+</script>
+<div class="g-bd">
+<div class="g-wrap n-srch">
+<div class="pgsrch f-pr j-suggest" id="auto-id-Fg5VgzNGUvNGke0W">
+<input id="m-search-input" type="text" class="srch j-flag" value="" style="opacity: 1;" />
+<span class="j-flag" style="display:none;" id="auto-id-T0dT88ylFMuTbaxQ"> </span>
+<a hidefocus="true" href="javascript:void(0)" class="btn j-flag" title="搜索" id="auto-id-3lunq0asCZO35CKi">搜索</a>
+<div class="u-lstlay j-flag" style="display:none;" id="auto-id-kwMVBaEiDLvRExeK">
+</div>
+</div>
+<div id="m-search">
+<div class="snote s-fc4 ztag">搜索“我一个人住”，找到 <em class="s-fc6">35</em> 首单曲</div>
+<ul class="m-tabs m-tabs-srch f-cb ztag" data-xname="" id="auto-id-HcPaccgNrqvS64w7" style="margin-bottom: auto;">
+<li class="fst"><a data-type="1" href="javascript:void(0)" class="z-slt"><em>单曲</em></a></li>
+<li><a hidefocus="true" data-type="100" href="javascript:void(0)"><em>歌手</em></a></li>
+<li><a hidefocus="true" data-type="10" href="javascript:void(0)"><em>专辑</em></a></li>
+<li><a hidefocus="true" data-type="1014" href="javascript:void(0)"><em>视频</em></a></li>
+<li><a hidefocus="true" data-type="1006" href="javascript:void(0)"><em>歌词</em></a></li>
+<li><a hidefocus="true" data-type="1000" href="javascript:void(0)"><em>歌单</em></a></li>
+<li><a hidefocus="true" data-type="1009" href="javascript:void(0)"><em>主播电台</em></a></li>
+<li><a hidefocus="true" data-type="1002" href="javascript:void(0)"><em>用户</em></a></li>
+</ul>
+<div class="ztag j-flag" id="auto-id-2N4pISrKPzUxXGFv"><div class="n-srchrst"><div class="srchsongst"><div class="item f-cb h-flag  "><div class="td"><div class="hd"><a id="song_5255656" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="5255656" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=5255656"><b title="我一个人住"><span class="s-fc7">我一个人住</span></b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="5255656" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL5255656" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL5255656" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="5255656" data-indexid="NL5255656" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9275">苏慧伦</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=512088" title="《我们的主打歌》">《我们的主打歌》</a></div></div><div class="td">04:08</div></div><div class="item f-cb h-flag even "><div class="td"><div class="hd"><a id="song_288811" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="288811" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=288811"><b title="我一个人住"><span class="s-fc7">我一个人住</span></b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="288811" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL288811" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL288811" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="288811" data-indexid="NL288811" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9275">苏慧伦</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=28656" title="《六月的茉莉梦》">《六月的茉莉梦》</a></div></div><div class="td">04:08</div></div><div class="item f-cb h-flag  "><div class="td"><div class="hd"><a id="song_108756" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="108756" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=108756"><b title="我一个人住"><span class="s-fc7">我一个人住</span></b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="108756" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL108756" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL108756" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="108756" data-indexid="NL108756" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9275">苏慧伦</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=10785" title="《李宗盛 (与他们) 的凡人歌》">《李宗盛 (与他们) 的凡人歌》</a></div></div><div class="td">04:07</div></div><div class="item f-cb h-flag even "><div class="td"><div class="hd"><a id="song_287856" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="287856" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=287856"><b title="我一个人住"><span class="s-fc7">我一个人住</span></b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="287856" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL287856" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL287856" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="287856" data-indexid="NL287856" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9275">苏慧伦</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=28571" title="《滚石香港黄金十年 苏慧伦精选》">《滚石香港黄金十年 苏慧伦精选》</a></div></div><div class="td">04:08</div></div><div class="item f-cb h-flag  "><div class="td"><div class="hd"><a id="song_108412" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="108412" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=108412"><b title="我一个人住"><span class="s-fc7">我一个人住</span></b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="108412" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL108412" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL108412" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="108412" data-indexid="NL108412" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9275">苏慧伦</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=10759" title="《爱情论》">《爱情论》</a></div></div><div class="td">04:07</div></div><div class="item f-cb h-flag even "><div class="td"><div class="hd"><a id="song_430793387" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="430793387" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=430793387"><b title="我一个人住"><span class="s-fc7">我一个人住</span></b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="430793387" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL430793387" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL430793387" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="430793387" data-indexid="NL430793387" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=12060013">冯大发</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=34731213" title="《弹唱那些歌》">《弹唱那些歌》</a></div></div><div class="td">03:06</div></div><div class="item f-cb h-flag  "><div class="td"><div class="hd"><a id="song_108547" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="108547" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=108547"><b title="我一个人住"><span class="s-fc7">我一个人住</span></b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="108547" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL108547" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL108547" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="108547" data-indexid="NL108547" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9275">苏慧伦</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=10774" title="《李宗盛音乐爱情大辞典》">《李宗盛音乐爱情大辞典》</a></div></div><div class="td">04:07</div></div><div class="item f-cb h-flag even "><div class="td"><div class="hd"><a id="song_158392" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="158392" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=158392"><b title="我愿意+容易受伤的女人+我一个人住+得意的笑+爱上一个不回家的人+猜心+潇洒走一回+出嫁+不想你也难+爱我人和我爱的人+不只是朋友+情路太难+情难枕+我的眼我的泪+风中的承诺+跟着感觉走+船歌">我愿意+容易受伤的女人+<span class="s-fc7">我一个人住</span>+得意的笑+爱上一个不回家的人+猜心+潇洒走一回+出嫁+不想你也难+爱我人和我爱的人+不只是朋友+情路太难+情难枕+我的眼我的泪+风中的承诺+跟着感觉走+船歌</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="158392" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL158392" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL158392" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="158392" data-indexid="NL158392" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=5359">巫启贤</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=15913" title="《凑热闹》">《凑热闹》</a></div></div><div class="td">11:00</div></div><div class="item f-cb h-flag  "><div class="td"><div class="hd"><a id="song_5237714" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="5237714" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=5237714"><b title="我一个人住"><span class="s-fc7">我一个人住</span></b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="5237714" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL5237714" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL5237714" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="5237714" data-indexid="NL5237714" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9275">苏慧伦</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=511058" title="《灯火阑珊》">《灯火阑珊》</a></div></div><div class="td">04:06</div></div><div class="item f-cb h-flag even "><div class="td"><div class="hd"><a id="song_5246640" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="5246640" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=5246640"><b title="我一个人住"><span class="s-fc7">我一个人住</span></b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="5246640" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL5246640" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL5246640" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="5246640" data-indexid="NL5246640" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9275">苏慧伦</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=511567" title="《情歌101》">《情歌101》</a></div></div><div class="td">04:07</div></div><div class="item f-cb h-flag  "><div class="td"><div class="hd"><a id="song_5277324" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="5277324" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=5277324"><b title="我一个人住"><span class="s-fc7">我一个人住</span></b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="5277324" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL5277324" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL5277324" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="5277324" data-indexid="NL5277324" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9275">苏慧伦</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=513400" title="《情牵女人心2》">《情牵女人心2》</a></div></div><div class="td">04:04</div></div><div class="item f-cb h-flag even "><div class="td"><div class="hd"><a id="song_288758" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="288758" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=288758"><b title="我一个人住"><span class="s-fc7">我一个人住</span></b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="288758" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL288758" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL288758" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="288758" data-indexid="NL288758" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9275">苏慧伦</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=28651" title="《爱上飞鸟的女孩 精选集》">《爱上飞鸟的女孩 精选集》</a></div></div><div class="td">04:07</div></div><div class="item f-cb h-flag  "><div class="td"><div class="hd"><a id="song_287964" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="287964" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=287964"><b title="我一个人住"><span class="s-fc7">我一个人住</span></b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="287964" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL287964" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL287964" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="287964" data-indexid="NL287964" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9275">苏慧伦</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=28574" title="《苏情时间》">《苏情时间》</a></div></div><div class="td">04:06</div></div><div class="item f-cb h-flag even "><div class="td"><div class="hd"><a id="song_528459318" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="528459318" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=528459318"><b title="真爱的世界我一个人住">真爱的世界<span class="s-fc7">我一个人住</span></b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="528459318" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL528459318" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL528459318" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="528459318" data-indexid="NL528459318" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=12038284">张力</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=38620069" title="《群星合集 61》">《群星合集 61》</a></div></div><div class="td">04:32</div></div><div class="item f-cb h-flag  "><div class="td"><div class="hd"><a id="song_553898974" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="553898974" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=553898974"><b title="我想一个人住在你心上（伴奏）">我想一个人住在你心上（伴奏）</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="553898974" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL553898974" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL553898974" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="553898974" data-indexid="NL553898974" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=12344100">吴刚</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=38381343" title="《拾月民谣》">《拾月民谣》</a></div></div><div class="td">05:21</div></div><div class="item f-cb h-flag even "><div class="td"><div class="hd"><a id="song_553897976" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="553897976" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=553897976"><b title="我想一个人住在你心上">我想一个人住在你心上</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="553897976" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL553897976" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL553897976" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="553897976" data-indexid="NL553897976" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=12344100">吴刚</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=38381343" title="《拾月民谣》">《拾月民谣》</a></div></div><div class="td">05:21</div></div><div class="item f-cb h-flag  "><div class="td"><div class="hd"><a id="song_407042106" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="407042106" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=407042106"><b title="幸福基金会">幸福基金会</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="407042106" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL407042106" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL407042106" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="407042106" data-indexid="NL407042106" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text">爱就是我的生活; 全体Mr.KING志愿者还给联合国发去了建议联合国设立“国际慈爱日” 的倡议信。  “Mr.KING”人的使命是让社会充满温馨，让世界充满爱 这个地球很小，使越来越多的人相逢、相聚，使越来越多颗心相依、相爱。让我们的爱心相联，把这颗星球轻轻包容，让种子感受阳光雨露，让温馨的风吹到每一个角落。 这个世界很大，只要我们守住一颗爱心，爱就永不枯竭。 爱无止尽，穿越时空、到永恒！     慈善一生 幸福一生 ！</div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=34575043" title="《幸福基金会》">《幸福基金会》</a></div></div><div class="td">03:26</div></div><div class="item f-cb h-flag even "><div class="td"><div class="hd"><a id="song_5250622" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="5250622" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=5250622"><b title="我曾用心爱着你">我曾用心爱着你</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="5250622" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL5250622" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL5250622" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="5250622" data-indexid="NL5250622" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9104">潘美辰</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=511794" title="《挂住你》">《挂住你》</a></div></div><div class="td">04:36</div></div><div class="item f-cb h-flag  "><div class="td"><div class="hd"><a id="song_288664" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="288664" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=288664"><b title="我不是一个人住">我不是一个人住</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="288664" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL288664" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL288664" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="288664" data-indexid="NL288664" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9275">苏慧伦</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=28639" title="《我有时会想》">《我有时会想》</a></div></div><div class="td">04:07</div></div><div class="item f-cb h-flag even "><div class="td"><div class="hd"><a id="song_474981683" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="474981683" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=474981683"><b title="我想你永远不会知道我只想一个人住在你心里（Cover 王博文）">我想你永远不会知道我只想一个人住在你心里（Cover 王博文）</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="474981683" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL474981683" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL474981683" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="474981683" data-indexid="NL474981683" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=12226614">韩美味</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=35437172" title="《FOR王博文》">《FOR王博文》</a></div></div><div class="td">05:37</div></div><div class="item f-cb h-flag  "><div class="td"><div class="hd"><a id="song_284191" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="284191" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=284191"><b title="一颗心夹住两个人">一颗心夹住两个人</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="284191" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL284191" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL284191" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="284191" data-indexid="NL284191" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9156">裘海正</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=28201" title="《爱我的人和我爱的人》">《爱我的人和我爱的人》</a></div></div><div class="td">04:46</div></div><div class="item f-cb h-flag even "><div class="td"><div class="hd"><a id="song_176767" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="176767" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=176767"><b title="是我没留住你">是我没留住你</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="176767" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL176767" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL176767" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="176767" data-indexid="NL176767" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=6074">殷正洋</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=17897" title="《等一个人》">《等一个人》</a></div></div><div class="td">04:52</div></div><div class="item f-cb h-flag  "><div class="td"><div class="hd"><a id="song_5239113" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="5239113" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=5239113"><b title="我不是一个人住(广东)">我不是一个人住(广东)</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="5239113" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL5239113" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL5239113" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="5239113" data-indexid="NL5239113" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9275">苏慧伦</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=511138" title="《滚石30周年精选珍藏集》">《滚石30周年精选珍藏集》</a></div></div><div class="td">04:06</div></div><div class="item f-cb h-flag even "><div class="td"><div class="hd"><a id="song_327995" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="327995" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=327995"><b title="淑勤之歌2001版">淑勤之歌2001版</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="327995" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL327995" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL327995" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="327995" data-indexid="NL327995" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=10570">曾淑勤</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=32453" title="《A-Vai来了！》">《A-Vai来了！》</a></div></div><div class="td">06:31</div></div><div class="item f-cb h-flag  "><div class="td"><div class="hd"><a id="song_314452" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="314452" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=314452"><b title="别让我一个人醉">别让我一个人醉</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="314452" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL314452" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL314452" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="314452" data-indexid="NL314452" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=10068">谢浛露</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=31112" title="《如何才能留住你》">《如何才能留住你》</a></div></div><div class="td">03:55</div></div><div class="item f-cb h-flag even "><div class="td"><div class="hd"><a id="song_543798554" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="543798554" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=543798554"><b title="我不是一个人住">我不是一个人住</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="543798554" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL543798554" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL543798554" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="543798554" data-indexid="NL543798554" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9275">苏慧伦</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=37873182" title="《一人一首成名曲 广东精选篇》">《一人一首成名曲 广东精选篇》</a></div></div><div class="td">04:06</div></div><div class="item f-cb h-flag  "><div class="td"><div class="hd"><a id="song_488847274" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="488847274" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=488847274"><b title="바보처럼 살았군요 - (我住像一个傻瓜)">바보처럼 살았군요</b></a><span title="我住像一个傻瓜" class="s-fc8"> - (我住像一个傻瓜)</span></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="488847274" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL488847274" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL488847274" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="488847274" data-indexid="NL488847274" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text">Gimdohyang</div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=35715931" title="《미사리 포크 연가(戀歌) (오리지날 &amp; 라이브 앨범)》">《미사리 포크 연가(戀歌) (오리지날 &amp; 라이브 앨범)》</a></div></div><div class="td">03:25</div></div><div class="item f-cb h-flag even "><div class="td"><div class="hd"><a id="song_1306210391" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="1306210391" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=1306210391"><b title="我是一个住在村里的人儿">我是一个住在村里的人儿</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="1306210391" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL1306210391" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL1306210391" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="1306210391" data-indexid="NL1306210391" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=12275908">馒头MIDIBear</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=72740411" title="《我是一个住在村里的人儿》">《我是一个住在村里的人儿》</a></div></div><div class="td">03:25</div></div><div class="item f-cb h-flag  "><div class="td"><div class="hd"><a id="song_288053" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="288053" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=288053"><b title="我不是一个人住">我不是一个人住</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="288053" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL288053" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL288053" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="288053" data-indexid="NL288053" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=9275">苏慧伦</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=28584" title="《伦选》">《伦选》</a></div></div><div class="td">04:06</div></div><div class="item f-cb h-flag even "><div class="td"><div class="hd"><a id="song_36471164" class="ply " title="播放" data-res-copyright="1" data-res-type="18" data-res-id="36471164" data-res-action="play" data-res-from="32" data-res-data="我一个人住"></a></div></div><div class="td w0"><div class="sn"><div class="text"><a href="/song?id=36471164"><b title="心里住着一个人">心里住着一个人</b></a></div></div></div><div class="td"><div class="opt hshow"><a class="u-icn u-icn-81 icn-add" href="javascript:;" title="添加到播放列表" hidefocus="true" data-res-copyright="1" data-res-type="18" data-res-id="36471164" data-res-action="addto" data-res-from="32" data-res-data="我一个人住"></a><span data-res-id="NL36471164" data-res-action="fav" data-res-type="18" class="icn icn-fav" title="收藏"></span><span data-res-id="NL36471164" data-res-action="share" data-res-type="18" class="icn icn-share" title="分享"></span><span data-res-id="36471164" data-indexid="NL36471164" data-res-action="download" data-res-type="18" class="icn icn-dl" title="下载"></span></div></div><div class="td w1"><div class="text"><a href="/artist?id=1158183">祁松涛</a></div></div><div class="td w2"><div class="text"><a class="s-fc3" href="/album?id=3313953" title="《宝贝我先走》">《宝贝我先走》</a></div></div><div class="td">04:00</div></div></div></div></div>
+<div class="ztag j-flag auto-1540224008622-parent">
+<div class="auto-1540224008622 u-page"><a href="#" class="zbtn zprv js-p-1540224008621 js-disabled" id="auto-id-2Z3tmCxs00T0iszO">上一页</a><a href="#" class="zpgi zpg1 js-i-1540224008621 js-selected" id="auto-id-7tNMH6iBoSIXDehe">1</a><a href="#" class="zpgi zpg2 js-i-1540224008621" id="auto-id-utdTzsPC2XkA3TsK">2</a><a href="#" class="zpgi zpg3 js-i-1540224008621" id="auto-id-6ryBE9c4XWypdLS9" style="display: none;"></a><a href="#" class="zpgi zpg4 js-i-1540224008621" id="auto-id-FU1bKC6mqDAsZqlM" style="display: none;"></a><a href="#" class="zpgi zpg5 js-i-1540224008621" id="auto-id-gWDs6xTaPHopBTms" style="display: none;"></a><a href="#" class="zpgi zpg6 js-i-1540224008621" id="auto-id-2dpLoGtVOhCTXurV" style="display: none;"></a><a href="#" class="zpgi zpg7 js-i-1540224008621" id="auto-id-p4UcfyshkrVuoK1t" style="display: none;"></a><a href="#" class="zpgi zpg8 js-i-1540224008621" id="auto-id-7NhZBWB0ZrAqvkV7" style="display: none;"></a><a href="#" class="zpgi zpg9 js-i-1540224008621" id="auto-id-mDOQKc45ccRA1H4u" style="display: none;"></a><a href="#" class="zbtn znxt js-n-1540224008621" id="auto-id-ViewgfTvQfTOJQzL">下一页</a></div></div>
+<div class="j-flag"></div>
+</div>
+</div>
+</div>
+
+<div class="g-ft ">
+<div class="m-ft">
+<div class="wrap f-cb">
+<div class="copy">
+<p class="link">
+<a href="//music.163.com/about" target="_blank" class="item s-fc4">关于网易</a><span class="line">|</span>
+<a href="//help.mail.163.com/service.html" target="_blank" class="item s-fc4">客户服务</a><span class="line">|</span>
+<a href="//music.163.com/html/web2/service.html" target="_blank" class="item s-fc4">服务条款</a><span class="line">|</span>
+<a href="//sitemap.163.com/" target="_blank" class="item s-fc4">网站导航</a><span class="line">|</span>
+<a id="g_feedback" href="#" class="s-fc4" onclick="nm.x.feedback();return false;" hidefocus="true">意见反馈</a>
+</p>
+<p class="right s-fc3">
+<span class="sep span">网易公司版权所有©1997-2018</span><span class="span">杭州乐读科技有限公司运营：</span><a href="http://p1.music.126.net/MkOOdJqWZdBx05Ias2W3UA==/109951163298654917.png" target="_blank" class="alink s-fc3">浙网文[2018]3506-263号</a>
+</p>
+<p class="contact s-fc3">
+<span class="sep span">违法和不良信息举报电话：0571-89853516</span>
+<span class="span">举报邮箱：</span><a class="alink" href="mailto:cloudmusicservice@163.com">cloudmusicservice@163.com</a>
+</p>
+</div>
+<ul class="enter f-fr">
+<li class="unit">
+<a class="logo logonew logo-musician f-tid" href="//music.163.com/recruit" target="_blank"></a>
+<span class="tt tt-musician"></span>
+</li>
+<li class="unit">
+<a class="logo logonew logo-topic f-tid" href="//music.163.com/topic/recruit" target="_blank"></a>
+<span class="tt tt-topic"></span>
+</li>
+<li class="unit">
+<a class="logo logonew logo-midea f-tid" href="//music.163.com/topic/selfmedia" target="_blank"></a>
+<span class="tt tt-midea"></span>
+</li>
+<li class="unit">
+<a class="logo logonew logo-reward f-tid" href="//music.163.com/web/reward" target="_blank"></a>
+<span class="tt tt-reward"></span>
+</li>
+<li class="unit">
+<a class="logo logonew logo-cash f-tid" href="//music.163.com/uservideo#/plan" target="_blank"></a>
+<span class="tt tt-cash"></span>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<a title="回到顶部" class="m-back" href="#" id="g_backtop" hidefocus="true" style="display:none;">回到顶部</a>
+<script src="//s3.music.126.net/web/s/core_8556f33641851a422ec534e33e6fa5a4.js?8556f33641851a422ec534e33e6fa5a4" type="text/javascript"></script><iframe frameborder="0" id="auto-id-iu91LA7xBig8LyUe" style="display: none;" src="about:blank"></iframe><script type="text/javascript" src="https://acstatic-dun.126.net/tool.min.js"></script><script src="//s3.music.126.net/web/s/pt_search_index_c526f0062d9b1cdf79c040e3ba6d1d2e.js?c526f0062d9b1cdf79c040e3ba6d1d2e" type="text/javascript"></script><script type="text/javascript" src="https://acstatic-dun.126.net/tool.min.js"></script>
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-38766552-1'],['_setLocalGifPath', '/UA-38766552-1/__utm.gif'],['_setLocalRemoteServerMode']);
+_gaq.push(['_trackPageview']);
+(function() {
+var ga = document.createElement('script');
+ga.type = 'text/javascript';
+ga.async = true;
+ga.src = '//wr.da.netease.com/ga.js';
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(ga, s);
+})();//fix ipad下的一个bug
+if (navigator.userAgent.indexOf('iPad') != -1) {
+iframeHeight = Math.max(
+Math.max(document.body.scrollHeight, document.documentElement.scrollHeight),
+Math.max(document.body.offsetHeight, document.documentElement.offsetHeight),
+Math.max(document.body.clientHeight, document.documentElement.clientHeight)
+);
+top.document.body.style.height = iframeHeight + 20 + 'px';
+}</script>
+</body></html>
