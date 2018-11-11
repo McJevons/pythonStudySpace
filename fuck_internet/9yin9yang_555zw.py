@@ -2,6 +2,9 @@ import json
 import os
 from pyquery import PyQuery as pq
 from docx import Document
+from docx.oxml.ns import qn
+from docx.shared import Pt
+from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 
 
 def get_chapters(url):
@@ -46,14 +49,28 @@ def save_file_txt(chapters):
 def save_file_docx(filename_json):
     '''保存为docx文件'''
     document = Document()
-    document.add_heading('九阴九阳', 0)
+
+    # 设置普通段落的默认格式
+    document.styles['Normal'].font.size = Pt(12)
+    document.styles['Normal'].font.name = u'宋体'
+    document.styles['Normal']._element.rPr.rFonts.set(qn('w:eastAsia'), u'宋体')
+    # document.styles['Normal'].paragraph_format.first_line_indent = Pt(48)
+
+    # 添加标题，并设置为居中对齐
+    p = document.add_heading('九阴九阳', 0)
+    p.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    # p.paragraph_format.alignment = 1 # 这样也可以
+    # 0-左对齐 1-居中 2-右对齐 3-两端对齐 4-分散对齐 5678不知道是什么
+
     with open(filename_json, encoding='utf-8') as file:
         chapters = json.load(file)
 
+    # 读取每一章节，添加至docx，每章节之后插入分页符
     for chapter in chapters:
         document.add_heading(chapter['title'], 2)
-        p = document.add_paragraph(chapter['content'])
-        # p.paragraph_format.first_line_indent=2
+        for paragraph in chapter['content'].split('\n\n'):
+            p = document.add_paragraph(paragraph.replace('�', ''))
+            p.paragraph_format.first_line_indent = Pt(24)
         document.add_page_break()
         print('%s 保存完毕！' % chapter['title'])
 
